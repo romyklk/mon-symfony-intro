@@ -1,0 +1,256 @@
+{#Le template hérite de base.html.twig = il reprend son contenu  #}
+
+{% extends 'base.html.twig' %}
+
+{#Parent rprend le contenu du block title définit dans base.html.twig puis ajoute
+ -Twig #}
+
+{% block title %}
+
+    {{ parent() }} -Twig
+
+{% endblock %}
+{#la surchage du block body définit dans base.html.twig . Quand on surchage un block , on reécrit
+entierement son contenu #}
+
+{% block body %}
+   {#définit une varial-ble test  #}
+
+    {% set test = 'une variable de test' %}
+
+    {#Afficher une variable dans un paragraphe#}
+    <p>{{ test }}</p>
+
+    {#Pour faire un e concaténation avec le tilde #}
+    <p>{{ test ~ '!' }}</p>
+
+    {#équivalent d'un var_dump() #}
+    {{ dump(test) }}
+
+    {# Strucre conditionnelle #}
+
+    {% if test!= '' %}
+        <p>Test n'est pas une chaîne vide</p>
+    {% else %}
+        <p>Test est une chaine vide </p>
+    {% endif %}
+
+    {% set vrai = true %}
+    {% set faux = false %}
+
+    {#not en toutes lettres : if (!faux) #}
+    {% if not faux %}
+        <p>faux n'est pas vrai</p>
+    {% endif %}
+
+
+    {#
+    and et or en toutes lettres:
+    if($vrai && $faux)
+    #}
+    {% if vrai and not faux %}
+        <p>Vrai est vrai et Faux n'est pas vrai</p>
+    {% endif %}
+
+    {% set tableau = [1,2,3,4,5,6]%}
+
+    {#Equivaut a foreach ($tableau as nb) #}
+    {% for nb in tableau  %}
+       {{ nb }}<br>
+    {% endfor %}
+
+
+    {#Pour accerder à la valeur à l'indice 1 : #}
+    <p>{{ tableau[1] }}</p>
+
+    {# ou Pour accerder à la valeur à l'indice 1 on fait comme ci dessous #}
+    <p>{{ tableau.1 }}</p>
+
+
+    {# équivaut à for($a = 0; a <=20, a++ #}
+    {% for a in 0..20 %}
+        {{ a }}<br>
+    {% endfor %}
+    <br><br>
+
+    {# équivaut à for($a = 10; a >=0, a-- #}
+    {% for a in 10..0 %}
+        {{ a }}<br>
+    {% endfor %}
+
+    <br><br>
+
+    {# équivaut à for($a = 0; a <=20, a+2 Cela incrémente de 2 n 2 #}
+    {% for a in range(0, 10, 2) %}
+        {{ a }}<br><br>
+    {% endfor %}
+    <br><br>
+
+
+    {#
+      Tableau associatif : $ assoc = ['nom' => 'KOUELKO','prenom' => 'Romuald']
+    #}
+
+    {% set assoc = {
+        nom: "KOULEKO",
+        prenom: "Romuald",
+
+    } %}
+
+    {# Pour accéder à la valeur de la clé nom , nous avions 2 possibilitées#}
+    <p>{{ assoc.nom }}</p>
+    ou
+    <p>{{ assoc['nom'] }}</p>
+
+
+    {#équivaut à foreach ($assoc as key=>value) #}
+    {% for key, value in assoc  %}
+        {{ key }}: {{ value }}<br>
+
+    {% endfor %}
+
+    {% set vide =[] %}
+
+    {#On rentre dans le else si le tableau est vide #}
+    {% for value in vide  %}
+        {{ value }}<br>
+        {% else %}
+        <p>Le tableau est vide</p>
+
+
+            {% for nb in  tableau %}
+                {#Tour de boucle à partir de 1#}
+                Tour de bloucle(index 1){{ loop.index }}<br><br>
+
+                {#Tour de boucle à partir de 0#}
+                Tour de bloucle(index 0){{ loop.index0 }}<br>
+                {{ nb }}<br>
+
+                {% if loop.first %}
+                    premier tour de boucle<br>
+                {% endif %}
+                {% if loop.last %}
+                    dernier tour de boucke<br>
+                {% endif %}
+
+                {% if loop.index == 3 %}
+                    3eme tour de boucle<br>
+
+                {% endif %}
+                {{ nb }}<br>
+            {% endfor %}
+        {% endfor %}
+
+            {#Test avec is et is not #}
+            {#if (isset($test)) équivaut à#}
+            {% if test is defined %}
+                <p>la variable test existe</p>
+            {% endif %}
+
+            {# if(!empty($test) équivaut à #}
+            {% if test is not empty %}
+                <p>La variable test n'est pas vide</p>
+            {% endif %}
+
+        {% set dix = 10 %}
+
+            {#if($dix % 5==0  équi vaut à #}
+            {% if dix is divisible by(5) %}
+                <p>Dix est divisible par 5</p>
+            {% endif %}
+
+            {#Even et odd pour pair et impair #}
+            {% if dix is even %}
+                <p>{{ dix }} est pair</p>
+            {% endif %}
+            {% if dix is not odd %}
+                <p>{{ dix }} n'est pas impair</p>
+            {% endif %}
+
+            {#if(in_array(2, $tableau)) équivaut à #}
+            {% if 2 in tableau %}
+                <p>Le tableau contien la valeur 2</p>
+            {% endif %}
+
+            {% if 'julien'in assoc %}
+                <p>Assoc contient 'julien'</p>
+            {% endif %}
+
+            {#Filtes avec pipe | #}
+
+            {#Applique la fonction strtoupper sur la fonction test équivaut à
+              strtoupper($test)
+            #}
+            <p>{{ test|upper }}</p>
+
+            {#Valeur par défaut de la variable quand elle est vide (empty)#}
+            <p>{{ var| default('La variable est var est vide') }}</p>
+
+            {#On peut cummuler des filtres#}
+            <p>{{ var| default('La variable est var est vide')|upper }}</p>
+
+           {#récupère le dernier élément d'un tableau.
+           On peut utiliser aussi first qui récupère le premier élément
+           #}
+            <p>{{ assoc|last }}</p>
+    <p>{{ assoc|first }}</p>
+
+    {#Formatage de la date #}
+    <p>{{ '2020-02-08'|date('d/m/Y') }}</p>
+
+    {#Formatage d'un objet DateTime#}
+    <p>{{ demain|date('d/m/Y H:i') }}</p>
+
+    {##
+      identique à l'appel à la méthode format() de DateTime L'appel
+    #}
+    <p>{{ demain.format('d/m/Y H:i') }}</p>
+
+
+    {#
+      Par défaut le html est échappé en entité HTML soit &lt; pour < et &gt; pour >
+      Pour échapper on utilise le filtre raw
+    #}
+{% set html = '<p>Un paragraphe</p>' %}
+    {{ html|raw  }}
+
+    {# inclu d'un autre fichier chemin à partir de la racine ici
+       c'est le repertoire       Template
+     #}
+    {% include 'twig/inclu.html.twig' %}
+
+
+    {#Le fichier inclus n'a pas accès aux variables venant de ce fichier inclu.html.twig #}
+    {% include 'twig/inclu.html.twig' only %}
+
+
+    {# le fichier inclus à accès à une variable foo qui vaut 'BAR'#}
+    {% include 'twig/inclu.html.twig' with{foo: "BAR"} %}
+
+
+    {# le fichier inclus n'a pas accès au variable foo#}
+    {% include 'twig/inclu.html.twig' only%}
+
+    {# le fichier inclus n'a accès qu'a la variable foo qui vaut 'BAR'#}
+    {% include 'twig/inclu.html.twig' with{foo: "BAR"} only %}
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

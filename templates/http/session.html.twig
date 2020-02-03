@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+   {#Pour avoir tout (all) le contenu de la session #}
+   {{ dump(app.session.all) }}
+
+{% endblock %}
+
+
+{% block title %}
+   {{ parent() }} -Session
+{% endblock %}
+

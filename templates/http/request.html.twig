@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+  <form action="" method="POST">
+
+    <input type="text" name="nom">
+    <button type="submit">Envoyer</button>
+
+  </form>
+
+  {# La variable app est accessible dans tous les templates et
+  permet notament d'accéder à l'objet Request
+  #}
+  {{ dump(app.getRequest().getMethod()) }}
+
+  {# équivaut à la ligne au dessus #}
+  {{ dump(app.request.method) }}
+
+{% endblock %}
+
+{% block title %}
+  {{ parent() }} -request
+{% endblock %}
+
