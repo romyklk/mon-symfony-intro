@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -84,7 +86,7 @@ class HttpController extends AbstractController
         // sont dans $_SESSION['_sf2_attributes']
         dump($_SESSION);
 
-        //Tous les éléments de la sessions tel que stocké par la session
+        //Tous les éléments de la sessions tel que stockés par la session
         // c'est à dire à l'intérieur de l'attribut
         dump($session->all());
 
@@ -116,7 +118,7 @@ class HttpController extends AbstractController
     public function response(Request $request)
     {
         // Toutes les méthodes des controlleurs doivent
-        // retourner un objte instance de la classe Response
+        // retourner un objet instance de la classe Response
         $response = new Response('Contenu de la page ');
 
         //http/localhost:8000/http/response?type=twig
@@ -126,24 +128,126 @@ class HttpController extends AbstractController
             //Dont le contenu est en HTML construit par le template
             return $this->render('http/response.html.twig');
         }
+        //http/localhost:8000/http/response?type=json
+        elseif ($request->query->get('type') == 'json'){
+            $response = [
+                'nom'=>'Marx',
+                'prenom'=>'GROUCHO'
+            ];
+            // Return new Response(json_encode($response));
+            // Encode le tableau $response en json
+            //et retourne reponse avec l'entête HTTP content type application/json
+            return new JsonResponse($response);
+            //http/localhost:8000/http/response?found=no
+        }elseif ($request->query->get('found') == 'no'){
+            // Pour retourner une 404, jette cette exception
+            throw new NotFoundHttpException();
+            //http/localhost:8000/http/response?redirect=index
+        }elseif ($request->query->get('redirect') == 'index'){
+
+            //redirection en passant le nom de la route dans la page:
+            //app_index_index : IndexController::index()
+            return $this->redirectToRoute('app_index_index');
+
+        }elseif ($request->query->get('redirect') == 'bonjour'){
+
+            // rediection avec une route qui contient une partie variable
+            return $this->redirectToRoute(
+                'app_index_bonjour',
+                [
+                    'qui'=>'le monde'
+                ]
+            );
+            }
 
         return $response;
     }
 
+    /**
+     * @Route("/flash")
+     */
+    public function flash()
+    {
+        //Enrégistrer un message dans la session
+        $this->addFlash('success','Message de confirmation');
+        $this->addFlash('success','Deuxieme message de confirmation');
+        $this->addFlash('error','Message d\'erreur ');
+        $this->addFlash('error2','Message erreur2 ');
+
+        return $this->redirectToRoute('app_http_flashed');
+    }
+
+    /**
+     * @Route("/flashed")
+     */
+  public function flashed(SessionInterface $session)
+  {
+      dump($session->all());
+
+      dump($_SESSION);
 
 
+      return $this->render('http/flashed.html.twig');
+  }
 
+    /*
+     * Faire une page avec un formulaire en post avec :
+     * - email (text)
+     * - message (textarea)
+     *
+     * Si le formulaire est envoyé, vérifier que les deux champs sont remplis
+     * Si non, afficher un message d'erreur
+     * Si oui, enregistrer les valeurs en session et rediriger vers
+     * une nouvelle page qui les affiche et vide la session
+     * Dans cette page, si la session est vide, on redirige vers le formulaire
+     */
 
+    /**
+     * @return Response
+     * @Route("/formu")
+     */
+  public function formu(Request $request)
+  {
+      $erreur = '';
 
+      // Si le formulaire a été envoyé
+      if($request->isMethod('POST')){
+          // $_POST['email'] et $_POST['nom']
+          $email = $request->request->get('email');
+          $message = $request->request->get('message');
 
+          if(!empty($email) && !empty($message)){
+              $session = $request->getSession();
+              $session->set('email',$email);
+              $session->set('message',$message);
 
+              return $this->redirectToRoute('app_http_veriform');
 
+          }else{
+              $erreur = 'Tous les champs sont obligatoires';
+          }
 
+      }
 
+      return $this->render('http/formu.html.twig',['erreur'=>$erreur]);
+  }
 
+    /**
+     * @return Response
+     * @Route("/veriForm")
+     */
+  public function veriForm(SessionInterface $session)
+  {
+      if(empty($session->all())){
+          return $this->redirectToRoute('app_http_formu');
+      }
+      $email = $session->get('email');
+      $message = $session->get('message');
 
+      // Pour vider la session
+      $session->clear();
 
-
-
+      return $this->render('http/veriForm.html.twig',['email'=>$email,'message'=>$message]);
+  }
 
 }

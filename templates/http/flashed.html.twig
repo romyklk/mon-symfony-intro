@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+     {# Récuperer tout les messages flash app.getSession.getFlashBag équivaut a ce
+    qui suit puis le all qui veut dire tous les messages
+ #}
+     {#
+     {{ dump(app.session.flashBag.all) }}
+     #}
+
+    {#
+        Afficher les types de messages avec les erreurs qu'ils contiennent en dessus
+        {{ dump(app.session.flashBag.all) }}
+    #}
+
+    {% for key, value in app.session.flashBag.all  %}
+
+        <strong>{{ key }}</strong><br>
+
+        {% for val in value  %}
+            <em>{{ val }}</em><br>
+
+        {% endfor %}
+    {% endfor %}
+
+
+
+
+{% endblock %}
+
+

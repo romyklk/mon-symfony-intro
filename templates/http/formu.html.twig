@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if erreur is not empty %}
+       <p style="color: #AA3333">{{ erreur }}</p>
+    {% endif %}
+
+    <form action="" method="post">
+        <label>E-mail :</label><br>
+        <input type="text" name="email" placeholder="votre E-mail"><br>
+        <label>Message : </label><br>
+        <textarea name="message" id="" cols="30" rows="10"
+                  placeholder="Message...."></textarea><br>
+        <button type="submit">Envoyer</button>
+    </form>
+
+
+{% endblock %}
+
+{% block title %}
+   {{ parent() }} -Formulaire
+{% endblock %}
