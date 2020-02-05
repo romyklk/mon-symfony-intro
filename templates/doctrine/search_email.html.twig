@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form>
+
+        <input type="text" name="email" placeholder="E-mail"><br><br>
+        <button type="submit" STYLE="background-color:blue; color: white;
+         width:130px">Chercher</button>
+    </form>
+<table style="border:100px solid #AA3333">
+    <tr style="background-color:aqua">
+        <th>id</th>
+        <th>Pseudo</th>
+        <th>E-mail</th>
+        <th>Birthdate</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.pseudo }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+            {% if user.birthdate is not empty %}
+                {{ user.birthdate|date('d/m/Y')}}
+            {% else %}
+                <strong style="color: red">{{ 'date vide' }}</strong>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

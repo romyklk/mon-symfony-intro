@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<ul><h1 style="color: #5eb5e0">LISTE DES UTILISATEURS</h1>
+
+
+    <table style="border:100px solid #AA3333">
+        <tr style="background-color:aqua">
+            <th>id</th>
+            <th>Pseudo</th>
+            <th>E-mail</th>
+            <th>Birthdate</th>
+        </tr>
+
+        {% for user in users %}
+        <tr>
+           <td>{{ user.id }}</td>
+            <td>{{ user.pseudo }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                    {% if user.birthdate is not empty %}
+                        {{ user.birthdate|date('d/m/Y')}}
+                        {% else %}
+                        <strong style="color: red">{{ 'date vide' }}</strong>
+                    {% endif %}
+             </td>
+        </tr>
+
+
+        {% endfor %}
+    </table>
+
+
+
+</ul>
+
+
+
+{% endblock %}
+
+
+
+{% block title %}
+   {{ parent() }} -Doctrine list users
+{% endblock %}
+

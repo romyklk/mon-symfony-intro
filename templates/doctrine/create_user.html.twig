@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form action="" method="post">
+        <div>
+            <label for="">Pseudo :</label>
+            <input type="text" name="pseudo">
+        </div>
+        <div>
+            <label for="">E-mail :</label>
+            <input type="text" name="email">
+        </div>
+        <div>
+            <label for="">Date de naissance :</label>
+            <input type="date" name="birthdate">
+        </div>
+
+        <button type="submit" style="color: white;
+                  background-color:green;">Enregistrer</button>
+    </form>
+{% endblock %}
+
+
+{% block title %}
+    {{ parent() }} -Doctrine create-user
+{% endblock %}
+
